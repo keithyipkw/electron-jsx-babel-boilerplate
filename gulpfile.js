@@ -2,6 +2,9 @@
 
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
+var useref = require('gulp-useref');
+var gulpif = require('gulp-if');
+var minifyCss = require('gulp-clean-css');
 var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
@@ -57,7 +60,7 @@ gulp.task('compile:scripts:watch', function (done) {
     .pipe($.watch('src/**/*.{js,jsx}', {verbose: true}))
     .pipe($.plumber())
     .pipe($.sourcemaps.init())
-    .pipe($.babel({stage: 0}))
+    .pipe($.babel({presets: ['es2015', 'react'], plugins: ["transform-class-properties", "transform-function-bind"]}))
     .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest(serveDir))
   ;
@@ -67,7 +70,7 @@ gulp.task('compile:scripts:watch', function (done) {
 // Compile scripts for distribution
 gulp.task('compile:scripts', function () {
   return gulp.src('src/**/*.{js,jsx}')
-    .pipe($.babel({stage: 0}))
+    .pipe($.babel({presets: ['es2015', 'react'], plugins: ["transform-class-properties", "transform-function-bind"]}))
     .pipe($.uglify())
     .pipe(gulp.dest(distDir))
   ;
@@ -75,12 +78,9 @@ gulp.task('compile:scripts', function () {
 
 // Make HTML and concats CSS files.
 gulp.task('html', ['inject:css'], function () {
-  var assets = $.useref.assets({searchPath: ['bower_components', serveDir + '/styles']});
   return gulp.src(serveDir + '/renderer/**/*.html')
-    .pipe(assets)
-    .pipe($.if('*.css', $.minifyCss()))
-    .pipe(assets.restore())
-    .pipe($.useref())
+    .pipe(useref({searchPath: ['bower_components', serveDir + '/styles']}))
+    .pipe(gulpif('*.css', minifyCss()))
     .pipe(gulp.dest(distDir + '/renderer'))
   ;
 });
@@ -121,7 +121,7 @@ gulp.task('bundle:dependencies', function () {
   });
 
   // add babel/polyfill module
-  modules.push({name: 'babel', main: ['polyfill.js']});
+  //modules.push({name: 'babel', main: ['polyfill.js']});
 
   // create bundle file and minify for each main files
   modules.forEach(function (it) {
@@ -166,8 +166,7 @@ gulp.task('package', ['win32', 'darwin', 'linux'].map(function (platform) {
       name: 'ElectronApp',
       arch: 'x64',
       platform: platform,
-      out: releaseDir + '/' + platform,
-      version: '0.28.1'
+      out: releaseDir + '/' + platform
     }, function (err) {
       done();
     });
