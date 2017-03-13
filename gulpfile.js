@@ -87,7 +87,7 @@ gulp.task('html', ['inject:css'], function () {
 
 // Copy fonts file. You don't need to copy *.ttf nor *.svg nor *.otf.
 gulp.task('copy:fonts', function () {
-  return gulp.src('bower_components/**/fonts/*.woff')
+  return gulp.src('bower_components/**/fonts/*.woff*')
     .pipe($.flatten())
     .pipe(gulp.dest(distDir + '/fonts'))
   ;
