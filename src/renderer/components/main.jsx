@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import shell from 'shell';
+import {shell} from 'electron';
 
 export class Main extends React.Component {
   state = {
