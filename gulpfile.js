@@ -182,8 +182,13 @@ gulp.task('clean', function (done) {
 });
 
 gulp.task('serve', ['inject:css', 'compile:scripts:watch', 'compile:styles', 'misc'], function () {
-  var electron = electronServer.create();
-  electron.start();
+  var electron = electronServer.create({stopOnClose: true});
+  var electronStateCallback = function(electronProcState) {
+    if (electronProcState == 'stopped') {
+      process.exit();
+    }
+  };
+  electron.start(electronStateCallback);
   gulp.watch(['bower.json', srcDir + '/renderer/index.html'], ['inject:css']);
   gulp.watch([serveDir + '/app.js', serveDir + '/browser/**/*.js'], electron.restart);
   gulp.watch([serveDir + '/styles/**/*.css', serveDir + '/renderer/**/*.html', serveDir + '/renderer/**/*.js'], electron.reload);
