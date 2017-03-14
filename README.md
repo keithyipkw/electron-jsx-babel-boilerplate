@@ -1,3 +1,6 @@
+This is an update of the Quramy/electron-jsx-babel-boilerplate. The version of Electron was not specified in the original repository so it became broken.
+
+---
 # electron-jsx-babel-boilerplate
 
 This is a sample repository of [Electron](http://electron.atom.io/) application.
@@ -15,7 +18,7 @@ Clone this repository, so execute the following command.
 
 ```bash
 cd electron-jsx-babel-boilerplate
-npm install -g bower gulp electron-prebuilt
+npm install -g bower gulp electron
 npm install
 ```
 
